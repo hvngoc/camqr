@@ -1,5 +1,6 @@
 package com.q.r.cam.bar.lib
 
+import android.util.Log
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
@@ -27,10 +28,16 @@ class BarCodeAnalyzer(val onSuccess: (List<Barcode>) -> Unit) : ImageAnalysis.An
             .build()
         val barcodeScanner = BarcodeScanning.getClient(barcodeScannerOptions)
 
-        barcodeScanner.process(image).addOnSuccessListener { barcodes ->
-            onSuccess(barcodes)
-        }
-
-        imageProxy.close()
+        barcodeScanner.process(image)
+            .addOnSuccessListener { barcodes ->
+                Log.i("con heo", " heo bar OKKK")
+                onSuccess(barcodes)
+            }
+            .addOnFailureListener {
+                Log.i("con heo", " heo bar Failure $it")
+            }.addOnCompleteListener {
+                mediaImage.close()
+                imageProxy.close()
+            }
     }
 }
